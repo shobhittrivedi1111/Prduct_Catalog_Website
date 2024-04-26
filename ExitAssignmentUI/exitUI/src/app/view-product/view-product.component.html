@@ -1,0 +1,42 @@
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{ImageUrl}}" alt="..." /></div>
+            <div class="col-md-6">
+                <h1 class="display-3 fw-bolder">{{Brand}}</h1>
+                <h2 class="display-5 fw-bolder">{{Name}} {{productcode}}</h2>
+
+
+                <div class="fs-5 mb-5">
+                    <span>₹{{getPrice(productcode)}}</span>
+                </div>
+                <p class="lead">{{Description}}</p>
+                <div class="d-flex">
+                    <input #myInput (keyup.enter)="deliverService(myInput.value)" class="form-control text-center me-3"
+                        placeholder="Enter PinCode" id="inputQuantity" type="num"  style="max-width: 8rem" required />
+                    <button (click)="deliverService(myInput.value)" class="btn btn-outline-dark flex-shrink-0"
+                        type="button">
+                        <i class="bi-cart-fill me-1"></i>
+                        Check Serviceability
+                    </button>
+                    &nbsp;
+                    <button (click)="clear()" class="btn btn-outline-dark flex-shrink-0"
+                        type="button">
+                        <i class="bi-cart-fill me-1"></i>
+                        Clear
+                    </button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;color: green;" *ngIf="showAdd" >Your Product is deliverable within {{pincodeList[0]?.noOfDays}} Days  </div>
+    <div style="text-align: center;color: red;" *ngIf="showError" >Try with valid Pincode</div>
+</section>
+
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Product Catalog Website 2024</p>
+    </div>
+</footer>

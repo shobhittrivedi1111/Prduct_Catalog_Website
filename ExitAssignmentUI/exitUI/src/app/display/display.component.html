@@ -1,0 +1,134 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Product Cart</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <select [(ngModel)]="selectedBrand" *ngIf="LoggedIn()">
+                    <option value="" disabled>Filter By Brand</option>
+                    <option *ngFor=" let cat of Brand" [ngValue]="cat">
+                        {{cat}}
+                    </option>
+                </select>
+
+                &nbsp;&nbsp;
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                    *ngIf="LoggedIn()">
+                    Filter By Price
+                </button>
+                &nbsp;&nbsp;
+                <button (click)="clearAllFilters()" type="button" class="btn btn-info">
+                    Clear
+                </button>
+
+
+            </ul>
+
+            <form class="form-header" onsubmit="return false;" method="GET">
+                <input #myInput (keyup.enter)="doSearch(myInput.value)" class="au-input au-input-xl" type="text"
+                    placeholder="Search for Products" />
+                <button (click)="doSearch(myInput.value)" class="btn btn-success" type="submit">Search</button>
+                &nbsp;&nbsp;
+                <button (click)="logout()" type="button" class="btn btn-danger" *ngIf="LoggedIn()">Logout</button>
+                <button (click)="login()" type="button" class="btn btn-success" *ngIf="!LoggedIn()">Login</button>
+            </form>
+
+        </div>
+    </div>
+</nav>
+
+<header class="bg-dark py-3">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-3 fw-bolder">Shop in style</h1>
+        </div>
+    </div>
+</header>
+
+
+<body class="d-flex flex-column min-vh-100">
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                <div class="col mb-5" *ngFor="let products of productList | brandfilter:selectedBrand | pricefilter:minPrice:maxPrice" >
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" src={{products.imageUrl}} />
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder">{{products.brand}}</h5>
+
+                                <!-- Product name-->
+                                <h5 class="fw-bolder">{{products.name}} {{products.productCode}}</h5>
+                                <!-- Product price-->
+                                <!-- ₹{{products.price}} -->
+                                <div *ngIf="LoggedIn()">₹{{getPrice(products.productCode)}}
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center" *ngIf="LoggedIn()"><a class="btn btn-outline-dark mt-auto"
+                                    routerLink="/view-product/{{products.productCode}}">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div *ngIf="(productList | brandfilter:selectedBrand | pricefilter:minPrice:maxPrice)?.length===0">
+           <img src="https://cdn.dribbble.com/users/2382015/screenshots/6065978/media/1273880a5b9cc8008301089835f37939.gif" style="padding-left: 17%;">
+        </div>
+    </section>
+</body>
+<!-- Modal -->
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel" style="padding-left: 150px">Filter By Price</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formValue">
+                    <input type="number" placeholder="Minimum Range" formControlName="minR" style="margin-left: 35px"
+                        [(ngModel)]="minR">
+                    To
+                    <input type="number" placeholder="Maximum Range" formControlName="maxR" [(ngModel)]="maxR">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" (click)="Modal()" class="btn btn-primary" data-bs-dismiss="modal">Filter</button> -->
+                <button type="button" *ngIf="minR<maxR ||minR==null || maxR==null; else templateName" (click)="Modal()" class="btn btn-primary" data-bs-dismiss="modal">Filter</button>
+                    <ng-template #templateName>
+                        <small class="text-danger">MinRange cannot be equal or greater than MaxRange</small>
+                    </ng-template>
+            </div>
+            <!-- <small class="text-danger">{{danger}}</small> -->
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Product Catalog Website 2024</p>
+    </div>
+</footer>
